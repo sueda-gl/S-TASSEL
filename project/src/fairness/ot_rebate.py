@@ -23,6 +23,6 @@ def rebate(donor_income: np.ndarray,
     M = ot.utils.dist(d[:, None], r[:, None], metric="euclidean")
 
     # Use the *stabilised* Sinkhorn variant – less overflow prone
-    γ = ot.bregman.sinkhorn_stabilized(a, b, M, reg=eps, numItermax=1000)
+    γ = ot.bregman.sinkhorn_stabilized(a, b, M, reg=5e-3, numItermax=5000)
 
     return γ.sum(0) * mass                       # back to € units
