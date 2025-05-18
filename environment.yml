@@ -16,6 +16,6 @@ dependencies:
   - pot  # Python Optimal Transport (binary wheels on conda-forge)
   # visualisation / dashboard
   - streamlit
-  - plotly
+  - plotly>=5.18
   # ensure pip is available for any extras
   - pip

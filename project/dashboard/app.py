@@ -41,13 +41,18 @@ income_mean = st.sidebar.number_input("Income lognormal μ", 0.5, 5.0, 3.0, 0.1,
 income_sigma = st.sidebar.number_input("Income lognormal σ", 0.1, 2.0, 1.0, 0.1,
                                      help="Sigma of lognormal distribution for income (in log-space)")
 
+# Solidarity factor λ
+lambda_val = st.sidebar.slider("Solidarity factor λ", 0.0, 1.0, float(cfg.lambda_), 0.05,
+                               help="Share of each Shapley gap extracted as reserve (0=revenue-max, 1=fairness-max)")
+
 run_btn  = st.sidebar.button("Run simulation 🚀")
 
 # -------- helper to run the model --------
 @st.cache_data(show_spinner="Running simulation …", max_entries=5)
 def run_sim(n_epochs: int, n_buyers: int, price_str: str, policy: str, 
             margin_shade: float = 0.7, margin_random: bool = True,
-            mu_inc: float = 3.0, sigma_inc: float = 1.0) -> pd.DataFrame:
+            mu_inc: float = 3.0, sigma_inc: float = 1.0,
+            lambda_val: float = cfg.lambda_) -> pd.DataFrame:
     price_list = [float(p.strip()) for p in price_str.split(",") if p.strip()]
 
     # fresh RNG so cached results are reproducible given the same inputs
@@ -61,6 +66,9 @@ def run_sim(n_epochs: int, n_buyers: int, price_str: str, policy: str,
             con.execute("DELETE FROM vault")
     except Exception as e:
         print(f"Token DB cleanup failed: {e}")
+
+    # set solidarity factor
+    cfg.lambda_ = lambda_val
 
     # Act function selection
     if policy == "Truthful":
@@ -106,11 +114,13 @@ def run_sim(n_epochs: int, n_buyers: int, price_str: str, policy: str,
 if run_btn:
     if policy_type == "Truthful":
         df = run_sim(epochs, buyers_n, prices, policy_type,
-                      mu_inc=income_mean, sigma_inc=income_sigma)
+                      mu_inc=income_mean, sigma_inc=income_sigma,
+                      lambda_val=lambda_val)
     else:
         df = run_sim(epochs, buyers_n, prices, policy_type,
                      margin_shade=shade_factor, margin_random=use_randomization,
-                     mu_inc=income_mean, sigma_inc=income_sigma)
+                     mu_inc=income_mean, sigma_inc=income_sigma,
+                     lambda_val=lambda_val)
 
     st.subheader("Revenue per Epoch")
     st.line_chart(df.set_index("epoch")[["revenue"]]

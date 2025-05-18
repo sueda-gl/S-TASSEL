@@ -54,4 +54,7 @@ logs/
 .vscode/
 *.swp
 *.swo
-.DS_Store 
+.DS_Store
+
+# Docs (generated PDFs, TeX sources)
+docs/ 

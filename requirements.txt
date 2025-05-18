@@ -7,4 +7,4 @@ supersuit
 gymnasium
 pot                      # Python Optimal Transport
 streamlit
-plotly
+plotly>=5.18
