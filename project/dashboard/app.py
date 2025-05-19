@@ -8,6 +8,12 @@ repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
 if repo_root not in sys.path:
     sys.path.insert(0, repo_root)
 
+# Explicitly add the `src` directory itself for Streamlit Cloud, which sometimes
+# fails to resolve the package even though its parent is on the path.
+src_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src'))
+if src_path not in sys.path:
+    sys.path.insert(0, src_path)
+
 import streamlit as st
 import numpy as np
 import pandas as pd
