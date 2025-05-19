@@ -1,6 +1,12 @@
 import os, sys
 # Ensure project root is on the Python path so `src.*` imports work
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+module_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if module_path not in sys.path:
+    sys.path.insert(0, module_path)
+# Also add the repository root to path for Streamlit deployment
+repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
+if repo_root not in sys.path:
+    sys.path.insert(0, repo_root)
 
 import streamlit as st
 import numpy as np
