@@ -2,11 +2,13 @@
 
 S-TASSEL is an economically principled multi-tier market simulation that implements a self-equalizing loop to balance revenue maximization with fairness goals.
 
-## Running the Project
+## Live Demo
 
-### Option 1: Docker (Recommended)
+Try the S-TASSEL simulation online: [https://s-stl-simulation.streamlit.app](https://s-stl-simulation.streamlit.app)
 
-The simplest way to run S-TASSEL is using Docker, which handles all dependencies automatically:
+## Running the Project Locally
+
+The recommended way to run S-TASSEL locally is using Docker, which handles all dependencies automatically:
 
 ```bash
 # Build the Docker image
@@ -26,21 +28,6 @@ docker run --rm s-tassel python project/run_batch.py
 To run tests:
 ```bash
 docker run --rm s-tassel pytest
-```
-
-### Option 2: Local Installation with Conda
-
-If you prefer a local installation:
-
-```bash
-# Create the conda environment
-conda env create -f environment.yml
-
-# Activate the environment
-conda activate s-tassel
-
-# Run the Streamlit dashboard
-streamlit run project/dashboard/app.py
 ```
 
 ## Project Structure
@@ -77,4 +64,4 @@ See the dashboard for an interactive demonstration of the self-equalizing fairne
 
 ## Requirements
 
-All dependencies are handled either by the Docker image or the conda environment. The core requirements are listed in `requirements.txt` and include numpy, pandas, pettingzoo, gymnasium, pot (Python Optimal Transport), and streamlit. 
+All dependencies are handled by the Docker image. The core requirements are listed in `requirements.txt` and include numpy, pandas, pettingzoo, gymnasium, pot (Python Optimal Transport), and streamlit. 
