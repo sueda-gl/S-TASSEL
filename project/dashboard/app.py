@@ -26,24 +26,30 @@ try:
     import sqlite3
     import plotly.express as px
     
-    # Now explicitly add src to the very front of path for our imports
-    src_path = os.path.join(project_root, 'src')
-    if src_path not in sys.path:
-        sys.path.insert(0, src_path)
-    
-    # Import our project modules
-    from config import cfg, rng  # cfg still holds parameters, rng for reproducibility
-    from env.market_env import MarketplaceEnv
-    from ladder import gini                              # <- new import
-    from policies.truthful import act as truthful_act
-    from policies.margin import act as margin_act
-    from tokens import ledger
+    # Import our project modules using the full path from project root
+    from src.config import cfg, rng
+    from src.env.market_env import MarketplaceEnv
+    from src.ladder import gini
+    from src.policies.truthful import act as truthful_act
+    from src.policies.margin import act as margin_act
+    from src.tokens import ledger
 except Exception as e:
     import streamlit as st
     st.error(f"Import error: {e}")
     st.error(f"sys.path: {sys.path}")
     import traceback
     st.code(traceback.format_exc())
+    # Attempt to list src directory to help debugging
+    try:
+        import os
+        if os.path.exists('/mount/src/s-tassel/project/src'):
+            st.write("Contents of src directory:")
+            st.write(os.listdir('/mount/src/s-tassel/project/src'))
+            if os.path.exists('/mount/src/s-tassel/project/src/env'):
+                st.write("Contents of src/env directory:")
+                st.write(os.listdir('/mount/src/s-tassel/project/src/env'))
+    except Exception as list_err:
+        st.error(f"Error listing directories: {list_err}")
     st.stop()
 
 st.set_page_config(page_title="S-TASSEL Dashboard", layout="wide")
