@@ -1,35 +1,44 @@
 import os, sys
-# Ensure project root is on the Python path so `src.*` imports work
-module_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if module_path not in sys.path:
-    sys.path.insert(0, module_path)
-# Also add the repository root to path for Streamlit deployment
+# Reset Python's import machinery for this project
+import importlib
+
+# Always use absolute paths for imports
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
-if repo_root not in sys.path:
-    sys.path.insert(0, repo_root)
 
-# Explicitly add the `src` directory itself for Streamlit Cloud, which sometimes
-# fails to resolve the package even though its parent is on the path.
-src_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src'))
-if src_path not in sys.path:
-    sys.path.insert(0, src_path)
+# Clear any pre-existing 'src' modules that might cause conflicts
+for module_name in list(sys.modules.keys()):
+    if module_name == 'src' or module_name.startswith('src.'):
+        del sys.modules[module_name]
 
-if 'src' in sys.modules:
-    # Remove any previously imported module named 'src' (e.g. a pip package)
-    del sys.modules['src']
+# Clean sys.path to avoid conflicts
+sys.path = [p for p in sys.path if 'site-packages' not in p]
+sys.path.insert(0, project_root)
+sys.path.insert(0, repo_root)
 
-import streamlit as st
-import numpy as np
-import pandas as pd
-import sqlite3
-import plotly.express as px
-
-from src.config import cfg, rng  # cfg still holds parameters, rng for reproducibility
-from src.env.market_env import MarketplaceEnv
-from src.ladder import gini                              # <- new import
-from src.policies.truthful import act as truthful_act
-from src.policies.margin import act as margin_act
-from src.tokens import ledger
+# Use absolute filepaths to directly import necessary modules
+try:
+    import streamlit as st
+    import numpy as np
+    import pandas as pd
+    import sqlite3
+    import plotly.express as px
+    
+    # Direct imports with specific paths
+    sys.path.insert(0, os.path.join(project_root, 'src'))
+    from src.config import cfg, rng  # cfg still holds parameters, rng for reproducibility
+    from src.env.market_env import MarketplaceEnv
+    from src.ladder import gini                              # <- new import
+    from src.policies.truthful import act as truthful_act
+    from src.policies.margin import act as margin_act
+    from src.tokens import ledger
+except Exception as e:
+    import streamlit as st
+    st.error(f"Import error: {e}")
+    st.error(f"sys.path: {sys.path}")
+    import traceback
+    st.code(traceback.format_exc())
+    st.stop()
 
 st.set_page_config(page_title="S-TASSEL Dashboard", layout="wide")
 st.title("S-TASSEL Market Simulation")
