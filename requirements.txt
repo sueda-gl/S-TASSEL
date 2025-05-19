@@ -1,6 +1,6 @@
 numpy>=1.23
 pandas
-scipy
+scipy<1.11.0
 scikit-learn
 pettingzoo==1.22.3
 supersuit
