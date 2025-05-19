@@ -23,6 +23,8 @@ wheels/
 # Environments
 .env
 .venv
+# Do NOT ignore the src/env package directory (market environment module)
+!project/src/env/
 env/
 venv/
 ENV/
