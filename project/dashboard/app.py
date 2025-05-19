@@ -11,27 +11,33 @@ for module_name in list(sys.modules.keys()):
     if module_name == 'src' or module_name.startswith('src.'):
         del sys.modules[module_name]
 
-# Clean sys.path to avoid conflicts
-sys.path = [p for p in sys.path if 'site-packages' not in p]
-sys.path.insert(0, project_root)
-sys.path.insert(0, repo_root)
+# Add our project paths to the front of sys.path
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+if repo_root not in sys.path:
+    sys.path.insert(0, repo_root)
 
 # Use absolute filepaths to directly import necessary modules
 try:
+    # Import standard libraries and dependencies first
     import streamlit as st
     import numpy as np
     import pandas as pd
     import sqlite3
     import plotly.express as px
     
-    # Direct imports with specific paths
-    sys.path.insert(0, os.path.join(project_root, 'src'))
-    from src.config import cfg, rng  # cfg still holds parameters, rng for reproducibility
-    from src.env.market_env import MarketplaceEnv
-    from src.ladder import gini                              # <- new import
-    from src.policies.truthful import act as truthful_act
-    from src.policies.margin import act as margin_act
-    from src.tokens import ledger
+    # Now explicitly add src to the very front of path for our imports
+    src_path = os.path.join(project_root, 'src')
+    if src_path not in sys.path:
+        sys.path.insert(0, src_path)
+    
+    # Import our project modules
+    from config import cfg, rng  # cfg still holds parameters, rng for reproducibility
+    from env.market_env import MarketplaceEnv
+    from ladder import gini                              # <- new import
+    from policies.truthful import act as truthful_act
+    from policies.margin import act as margin_act
+    from tokens import ledger
 except Exception as e:
     import streamlit as st
     st.error(f"Import error: {e}")
