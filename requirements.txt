@@ -2,9 +2,10 @@ numpy>=1.23
 pandas
 scipy
 scikit-learn
-pettingzoo>=1.23
+pettingzoo==1.22.3
 supersuit
 gymnasium
-pot                      # Python Optimal Transport
+pot==0.9.1
 streamlit
 plotly>=5.18
+python-dotenv
