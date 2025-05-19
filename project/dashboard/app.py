@@ -14,6 +14,10 @@ src_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src'))
 if src_path not in sys.path:
     sys.path.insert(0, src_path)
 
+if 'src' in sys.modules:
+    # Remove any previously imported module named 'src' (e.g. a pip package)
+    del sys.modules['src']
+
 import streamlit as st
 import numpy as np
 import pandas as pd
